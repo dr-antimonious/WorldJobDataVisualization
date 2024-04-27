@@ -1,2 +1,5 @@
 .idea
-/Assets/custom.geo.json
+/Assets/Unprocessed/
+/node_modules/
+/package.json
+/package-lock.json
