@@ -1,6 +1,6 @@
 const selector = document.getElementById("mapData");
 const yearSelector = document.getElementById("mapYear");
-let colorScale, tooltipColorScale, getter,
+let colorScale, tooltipColorScale, getter, domain,
     selection = selector.value,
     year = parseInt(yearSelector.value);
 
@@ -33,7 +33,7 @@ function pointerOver(event, d, getter) {
                 break;
             case "rgdpeperpop":
             case "rgdpoperpop":
-                data = `${getter(index).toFixed(2)} in 2019 USD`;
+                data = `${getter(index).toFixed(2)} in 2017 USD`;
                 break;
             default:
                 data = `${getter(index).toFixed(0)}`;
@@ -54,7 +54,7 @@ function pointerMove(event, d, getter) {
     );
     const color = index === -1 ? "#D3D3D3" : colorScale(getter(index));
     const textColor = index === -1 ? "#000000" : tooltipColorScale(getter(index));
-    return tooltip.style("top", `${mouse[1] - 10}px`)
+    return tooltip.style("top", `${mouse[1] + 20}px`)
         .style("left", `${mouse[0] + 20}px`)
         .style("background", color)
         .style("color", textColor);
@@ -69,30 +69,6 @@ function fillFunction(d, getter) {
     );
     if (index === -1) return "#D3D3D3";
     return colorScale(getter(index));
-}
-
-function eventFunction(getter) {
-    map_svg.selectAll("path.country")
-        .data(world.features)
-        .enter()
-        .append("path")
-        .attr("class", "country")
-        .merge(map_svg.selectAll("path.country").data(world.features))
-        .transition()
-        .duration(500)
-        .attr("fill", (d) => fillFunction(d, getter))
-        .attr("stroke", () => {
-             return checkMode(selection) ? "black" : "white";
-        })
-        .attr("stroke-width", () => {
-            return checkMode(selection) ? "0.1px" : "0.25px";
-        })
-        .on("pointerover", (event, d) => pointerOver(event, d, getter))
-        .on("pointermove", (event, d) => pointerMove(event, d, getter))
-        .on("pointerout", function() {
-            return tooltip.style("visibility", "hidden");
-        })
-        .exit().remove();
 }
 
 function getPop(index) {
@@ -229,6 +205,21 @@ const tooltip = d3.select("body")
     .style("visibility", "hidden")
     .style("background", "#D3D3D3");
 
+const mapLegendElement = d3.select("body")
+    .append("svg")
+    .attr("class", "montserrat-regular mapLegend")
+    .style("position", "absolute")
+    .style("top", "600px")
+    .style("left", "225px")
+    .style("z-index", "5")
+    .style("width", "215px")
+    .style("background", "transparent");
+
+const mapLegend = d3.legendColor()
+    .labelFormat(d3.format(".0f"))
+    .labels(d3.legendHelpers.thresholdLabels)
+    .scale(colorScale);
+
 map_svg.selectAll("path.country")
     .data(world.features)
     .enter()
@@ -251,7 +242,35 @@ map_svg.selectAll("path.country")
     .on("pointermove", (event, d) => pointerMove(event, d, getter))
     .on("pointerout", function() {
         return tooltip.style("visibility", "hidden");
-    })
+    });
+
+mapLegendElement.call(mapLegend);
+
+function eventFunction(getter) {
+    mapLegend.scale(colorScale);
+    mapLegendElement.call(mapLegend);
+    map_svg.selectAll("path.country")
+        .data(world.features)
+        .enter()
+        .append("path")
+        .attr("class", "country")
+        .merge(map_svg.selectAll("path.country").data(world.features))
+        .transition()
+        .duration(500)
+        .attr("fill", (d) => fillFunction(d, getter))
+        .attr("stroke", () => {
+            return checkMode(selection) ? "black" : "white";
+        })
+        .attr("stroke-width", () => {
+            return checkMode(selection) ? "0.1px" : "0.25px";
+        })
+        .on("pointerover", (event, d) => pointerOver(event, d, getter))
+        .on("pointermove", (event, d) => pointerMove(event, d, getter))
+        .on("pointerout", function() {
+            return tooltip.style("visibility", "hidden");
+        })
+        .exit().remove();
+}
 
 selector.addEventListener("change", (event) => {
     selection = event.target.value;
@@ -262,4 +281,4 @@ selector.addEventListener("change", (event) => {
 yearSelector.addEventListener("change", (event) => {
     year = parseInt(event.target.value);
     eventFunction(getter);
-})
+});

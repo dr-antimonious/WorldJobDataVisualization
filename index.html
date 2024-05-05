@@ -14,8 +14,8 @@
         <script src="Assets/data.js"></script>
     </head>
     <body>
-        <label for="mapData">Choose a statistic to be shown on the map:</label><br />
-        <select name="mapData" id="mapData">
+        <label class="montserrat-bold" for="mapData">Choose a statistic to be shown on the map:</label><br />
+        <select class="montserrat-regular" name="mapData" id="mapData">
             <option value="avh">Average work hours per employee per year</option>
             <option value="empperpop">Percentage of employed citizens</option>
             <option value="rgdpeperpop">RGDPE per citizen</option>
@@ -23,8 +23,8 @@
             <option value="pop">Total population</option>
             <option value="emp">Total employed population</option>
         </select>
-        <svg id="map" width="1400" height="800"></svg>
-        <div class="sliderContainer">
+        <svg style="z-index: 1" id="map" width="1400" height="800"></svg>
+        <div class="sliderContainer montserrat-bold">
             <label for="mapYear">Choose a year:</label><br />
             <input type="range" min="1995" max="2019" value="1995" list="markers" step="1" class="slider" id="mapYear">
             <datalist id="markers">
