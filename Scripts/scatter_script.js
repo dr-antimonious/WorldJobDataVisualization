@@ -19,7 +19,7 @@ const size = d3.scaleLinear()
 
 const pointSeries = fc.seriesSvgPoint()
     .crossValue(d => d.avh * d.emp)
-    .mainValue(d => d.rgdpe / d.emp)
+    .mainValue(d => d.rgdpe / d.pop)
     .size(d => size(d.emp))
     .decorate(sel => {
         sel.enter().attr('fill', d => color(world.features.find(
@@ -44,13 +44,13 @@ const chart = fc.chartCartesian(d3.scaleLog(), d3.scaleLog())
     .yDomain([Math.min.apply(null,
         plotData.map(
             function (d){
-                return d.rgdpe / d.emp;
+                return d.rgdpe / d.pop;
             }
         )
     ) * 0.95, Math.max.apply(null,
         plotData.map(
             function (d){
-                return d.rgdpe / d.emp;
+                return d.rgdpe / d.pop;
             }
         )
     ) * 1.05])
