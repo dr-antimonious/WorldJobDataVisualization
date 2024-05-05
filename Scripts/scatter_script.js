@@ -2,6 +2,12 @@ let plotData = world_data.filter(
     e => e.year === year
 );
 
+d3.select("body")
+    .append("div")
+    .attr("id", "scatter")
+    .style("width", "1400px")
+    .style("height", "800px");
+
 const regions = new Set(world.features.map(d => d.properties.continent));
 const color = d3.scaleOrdinal(d3.schemeCategory10).domain(regions.values());
 

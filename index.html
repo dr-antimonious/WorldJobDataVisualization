@@ -4,18 +4,33 @@
     <head>
         <title>World job data visualization</title>
         <link rel="stylesheet" href="style.css">
-        <script src="https://d3js.org/d3.v6.js"></script>
-        <script src="https://unpkg.com/d3"></script>
-        <script src="https://unpkg.com/d3fc"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap">
+        <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
+        <script src="https://unpkg.com/d3fc@15.2.6/build/d3fc.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
         <script src="https://raw.githubusercontent.com/susielu/d3-legend/master/d3-legend.min.js"></script>
         <script src="Assets/world.geo.js"></script>
         <script src="Assets/data.js"></script>
     </head>
     <body>
+        <label for="mapData">Choose a statistic to be shown on the map:</label>
+        <select name="mapData" id="mapData">
+            <option value="avh">Average work hours per employee per year</option>
+            <option value="rgdpeperpop">RGDPE per citizen</option>
+            <option value="rgdpoperpop">RGDPO per citizen</option>
+            <option value="rgdpeperemp">RGDPE per employed citizen</option>
+            <option value="rgdpoperemp">RGDPO per employed citizen</option>
+            <option value="pop">Total population in a year</option>
+            <option value="emp">Total employed population in a year</option>
+            <option value="rgdpetot">Total RGDPE in a year</option>
+            <option value="rgdpotot">Total RGDPO in a year</option>
+        </select>
         <svg id="map" width="1400" height="800"></svg>
-        <div id="scatter" style="width: 1400px; height: 800px"></div>
-        <script>let year = 2019;</script>
+        <div class="sliderContainer">
+            <input type="range" min="1995" max="2019" value="1995" class="slider" id="mapYear">
+        </div>
         <script src="Scripts/map_script.js"></script>
         <script src="Scripts/scatter_script.js"></script>
     </body>
