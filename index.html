@@ -23,7 +23,9 @@
             <option value="pop">Total population</option>
             <option value="emp">Total employed population</option>
         </select>
-        <svg style="z-index: 1" id="map" width="1400" height="800"></svg>
+        <div style="overflow: hidden">
+            <svg style="z-index: 1" id="map" width="1400" height="800"></svg>
+        </div>
         <div class="sliderContainer montserrat-bold">
             <label for="mapYear">Choose a year:</label><br />
             <input type="range" min="1995" max="2019" value="1995" list="markers" step="1" class="slider" id="mapYear">
@@ -36,6 +38,7 @@
                 <option value="2019"></option>
             </datalist>
         </div>
+        <button style="z-index: 10" type="button" id="mapReset">Reset zoom</button>
         <script src="Scripts/map_script.js"></script>
         <script src="Scripts/scatter_script.js"></script>
     </body>

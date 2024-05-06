@@ -8,15 +8,30 @@ const map_svg = d3.select("#map"),
     map_width = +map_svg.attr("width"),
     map_height = +map_svg.attr("height");
 
+const mapZoom = d3.zoom()
+    .extent([[0, 0], [map_width, map_height]])
+    .scaleExtent([1, 8])
+    .translateExtent([[-100, -100], [map_width + 100, map_height + 100]])
+    .filter((event) => {
+        event.preventDefault();
+        return (!event.ctrlKey || event.type === 'wheel') && !event.button;
+    });
+
+document.getElementById("mapReset")
+    .addEventListener("click", () => {
+        map_svg.transition()
+            .duration(750)
+            .call(mapZoom.transform, d3.zoomIdentity);
+    })
+
+map_svg.call(mapZoom.on("zoom", (event) => { map_svg.attr("transform", event.transform); }));
+
 const path = d3.geoPath();
 const projection = d3.geoMercator()
-    .scale(180)
-    .center([-10,45])
+    .scale(180).center([-10,45])
     .translate([map_width / 2, map_height / 2]);
 
-function checkMode(selection) {
-    return ["rgdpeperpop", "rgdpoperpop", "empperpop"].includes(selection);
-}
+function checkMode(selection) { return ["rgdpeperpop", "rgdpoperpop", "empperpop"].includes(selection); }
 
 function pointerOver(event, d, getter) {
     const index = world_data.findIndex(
@@ -40,12 +55,15 @@ function pointerOver(event, d, getter) {
                 break;
         }
     }
+    d3.select(event.currentTarget)
+        .transition()
+        .delay(50)
+        .attr("stroke-width", "1.5px");
     tooltip.text(`${d.properties.geounit}: ${data} (${year})`);
     return tooltip.style("visibility", "visible");
 }
 
 function pointerMove(event, d, getter) {
-    const mouse = d3.pointer(event);
     const index = world_data.findIndex(
         e => (
             e.countrycode === d.properties.adm0_a3 &&
@@ -54,8 +72,8 @@ function pointerMove(event, d, getter) {
     );
     const color = index === -1 ? "#D3D3D3" : colorScale(getter(index));
     const textColor = index === -1 ? "#000000" : tooltipColorScale(getter(index));
-    return tooltip.style("top", `${mouse[1] + 20}px`)
-        .style("left", `${mouse[0] + 20}px`)
+    return tooltip.style("top", `${event.clientY + 20}px`)
+        .style("left", `${event.clientX + 20}px`)
         .style("background", color)
         .style("color", textColor);
 }
@@ -71,47 +89,19 @@ function fillFunction(d, getter) {
     return colorScale(getter(index));
 }
 
-function getPop(index) {
-    return world_data[index].pop * 1000000;
-}
+function getPop(index) { return world_data[index].pop * 1000000; }
+function getEmp(index) { return world_data[index].emp * 1000000; }
+function getAvh(index) { return world_data[index].avh; }
+function getRgdpePerPop(index) { return world_data[index].rgdpe / world_data[index].pop; }
+function getRgdpoPerPop(index) { return world_data[index].rgdpo / world_data[index].pop; }
+function getEmpPerPop(index) { return world_data[index].emp / world_data[index].pop * 100; }
 
-function getEmp(index) {
-    return world_data[index].emp * 1000000;
-}
-
-function getAvh(index) {
-    return world_data[index].avh;
-}
-
-function getRgdpePerPop(index) {
-    return world_data[index].rgdpe / world_data[index].pop;
-}
-
-function getRgdpoPerPop(index) {
-    return world_data[index].rgdpo / world_data[index].pop;
-}
-
-function getEmpPerPop(index) {
-    return world_data[index].emp / world_data[index].pop * 100;
-}
-
-const popDomain = [3.54965129e+06, 6.29684286e+06, 1.05705051e+07,
-    2.29512369e+07, 5.03403393e+07, 1.07878131e+08];
-
-const empDomain = [1.52150049e+06, 2.98894119e+06, 4.80059576e+06,
-    1.01309953e+07, 2.06214649e+07, 4.31851316e+07];
-
-const avhDomain = [1561.25978637, 1741.91192933, 1922.56407229,
-    2103.21621525, 2283.86835822, 2464.52050118];
-
-const rgdpePerPopDomain = [16921.78323231, 32925.06158398, 48928.33993564,
-    64931.61828731, 80934.89663897, 96938.17499063];
-
-const rgdpoPerPopDomain = [15551.01191964, 30062.91808672, 44574.8242538,
-    59086.73042088, 73598.63658796, 88110.54275504];
-
-const empPerPopDomain = [31.33061327, 38.57815155, 45.82568984,
-    53.07322812, 60.32076641, 67.56830469];
+const popDomain = [3550000, 6300000, 10000000, 23000000, 50000000, 110000000];
+const empDomain = [1500000, 3000000, 4800000, 10100000, 20600000, 43200000];
+const avhDomain = [1560, 1740, 1920, 2100, 2285, 2465];
+const rgdpePerPopDomain = [17000, 33000, 49000, 65000, 81000, 97000];
+const rgdpoPerPopDomain = [16000, 30000, 45000, 60000, 74000, 88000];
+const empPerPopDomain = [30, 40, 45, 55, 60, 65];
 
 const popColorScale = d3.scaleThreshold()
     .domain(popDomain)
@@ -212,7 +202,7 @@ const mapLegendElement = d3.select("body")
     .style("top", "600px")
     .style("left", "225px")
     .style("z-index", "5")
-    .style("width", "215px")
+    .style("width", "250px")
     .style("background", "transparent");
 
 const mapLegend = d3.legendColor()
@@ -237,10 +227,16 @@ map_svg.selectAll("path.country")
         return checkMode(selection) ? "0.1px" : "0.25px";
     })
     .style("pointer-events", "all")
-    .style("cursor", "help")
+    .style("cursor", "pointer")
     .on("pointerover", (event, d) => pointerOver(event, d, getter))
     .on("pointermove", (event, d) => pointerMove(event, d, getter))
-    .on("pointerout", function() {
+    .on("pointerout", (event) => {
+        d3.select(event.currentTarget)
+            .transition()
+            .delay(50)
+            .attr("stroke-width", () => {
+            return checkMode(selection) ? "0.1px" : "0.25px";
+        });
         return tooltip.style("visibility", "hidden");
     });
 
@@ -266,7 +262,13 @@ function eventFunction(getter) {
         })
         .on("pointerover", (event, d) => pointerOver(event, d, getter))
         .on("pointermove", (event, d) => pointerMove(event, d, getter))
-        .on("pointerout", function() {
+        .on("pointerout", (event) => {
+            d3.select(event.currentTarget)
+                .transition()
+                .delay(50)
+                .attr("stroke-width", () => {
+                return checkMode(selection) ? "0.1px" : "0.25px";
+            });
             return tooltip.style("visibility", "hidden");
         })
         .exit().remove();
