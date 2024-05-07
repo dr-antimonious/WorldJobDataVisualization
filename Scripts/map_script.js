@@ -22,7 +22,13 @@ document.getElementById("mapReset")
         map_svg.transition()
             .duration(750)
             .call(mapZoom.transform, d3.zoomIdentity);
-    })
+    });
+
+document.getElementById("mapContainer")
+    .addEventListener("pointerdown", () => { map_svg.style("cursor", "move"); });
+
+document.getElementById("mapContainer")
+    .addEventListener("pointerup", () => { map_svg.style("cursor", "default"); });
 
 map_svg.call(mapZoom.on("zoom", (event) => { map_svg.attr("transform", event.transform); }));
 
@@ -43,21 +49,13 @@ function pointerOver(event, d, getter) {
     let data = "No data";
     if (index !== -1) {
         switch (selection) {
-            case "empperpop":
-                data = `${getter(index).toFixed(0)}%`;
-                break;
-            case "rgdpeperpop":
-            case "rgdpoperpop":
-                data = `${getter(index).toFixed(2)} in 2017 USD`;
-                break;
-            default:
-                data = `${getter(index).toFixed(0)}`;
-                break;
+            case "empperpop": data = `${getter(index).toFixed(0)}%`; break;
+            case "rgdpeperpop": case "rgdpoperpop": data = `${getter(index).toFixed(2)} in 2017 USD`; break;
+            default: data = `${getter(index).toFixed(0)}`; break;
         }
     }
     d3.select(event.currentTarget)
-        .transition()
-        .delay(50)
+        .transition().delay(50)
         .attr("stroke-width", "1.5px");
     tooltip.text(`${d.properties.geounit}: ${data} (${year})`);
     return tooltip.style("visibility", "visible");
@@ -215,25 +213,18 @@ map_svg.selectAll("path.country")
     .enter()
     .append("path")
     .attr("class", "country")
-    .attr("id", (d) => {
-        return d.properties.adm0_a3;
-    })
+    .attr("id", (d) => { return d.properties.adm0_a3; })
     .attr("d", d3.geoPath().projection(projection))
     .attr("fill", (d) => fillFunction(d, getter))
-    .attr("stroke", () => {
-        return checkMode(selection) ? "black" : "white";
-    })
-    .attr("stroke-width", () => {
-        return checkMode(selection) ? "0.1px" : "0.25px";
-    })
+    .attr("stroke", () => { return checkMode(selection) ? "black" : "white"; })
+    .attr("stroke-width", () => { return checkMode(selection) ? "0.1px" : "0.25px"; })
     .style("pointer-events", "all")
     .style("cursor", "pointer")
     .on("pointerover", (event, d) => pointerOver(event, d, getter))
     .on("pointermove", (event, d) => pointerMove(event, d, getter))
     .on("pointerout", (event) => {
         d3.select(event.currentTarget)
-            .transition()
-            .delay(50)
+            .transition().delay(50)
             .attr("stroke-width", () => {
             return checkMode(selection) ? "0.1px" : "0.25px";
         });
@@ -254,18 +245,13 @@ function eventFunction(getter) {
         .transition()
         .duration(500)
         .attr("fill", (d) => fillFunction(d, getter))
-        .attr("stroke", () => {
-            return checkMode(selection) ? "black" : "white";
-        })
-        .attr("stroke-width", () => {
-            return checkMode(selection) ? "0.1px" : "0.25px";
-        })
+        .attr("stroke", () => { return checkMode(selection) ? "black" : "white"; })
+        .attr("stroke-width", () => { return checkMode(selection) ? "0.1px" : "0.25px"; })
         .on("pointerover", (event, d) => pointerOver(event, d, getter))
         .on("pointermove", (event, d) => pointerMove(event, d, getter))
         .on("pointerout", (event) => {
             d3.select(event.currentTarget)
-                .transition()
-                .delay(50)
+                .transition().delay(50)
                 .attr("stroke-width", () => {
                 return checkMode(selection) ? "0.1px" : "0.25px";
             });
