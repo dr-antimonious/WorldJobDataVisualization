@@ -85,8 +85,8 @@ function mapPointerMove(event, d, getter) {
     const index = mapFindIndex(d, mapYear);
     const color = index === -1 ? "#D3D3D3" : mapColorScale(getter(index));
     const textColor = index === -1 ? "#000000" : mapTooltipColorScale(getter(index));
-    return mapTooltip.style("top", `${event.clientY + 20}px`)
-        .style("left", `${event.clientX + 20}px`)
+    return mapTooltip.style("top", `${event.pageY + 20}px`)
+        .style("left", `${event.pageX + 20}px`)
         .style("background", color)
         .style("color", textColor);
 }
