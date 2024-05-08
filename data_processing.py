@@ -1,16 +1,17 @@
-from pandas import read_excel, cut, qcut
+from pandas import read_excel, cut, qcut, read_json, read_csv
+from matplotlib.pyplot import plot, xlabel, ylabel, show
 
-data = read_excel(io = 'Assets\\Unprocessed\\Data.xlsx',
-                     sheet_name = 'Data',
-                     usecols = ['countrycode',
-                                'country',
-                                'year',
-                                'rgdpe',
-                                'rgdpo',
-                                'pop',
-                                'emp',
-                                'avh']).drop_duplicates().dropna()
-data = data[data['year'] > 1994]
+# data = read_excel(io = 'Assets\\Unprocessed\\Data.xlsx',
+#                      sheet_name = 'Data',
+#                      usecols = ['countrycode',
+#                                 'country',
+#                                 'year',
+#                                 'rgdpe',
+#                                 'rgdpo',
+#                                 'pop',
+#                                 'emp',
+#                                 'avh']).drop_duplicates().dropna()
+# data = data[data['year'] > 1994]
 
 # data.to_json('Assets\\Data.js', orient = 'records')
 
@@ -24,4 +25,13 @@ data = data[data['year'] > 1994]
 
 # print(cut(data['rgdpo'] / data['pop'], 7, retbins = True)[1])
 
-print(cut(data['emp'] / data['pop'] * 100, 7, retbins = True)[1])
+# print(cut(data['emp'] / data['pop'] * 100, 7, retbins = True)[1])
+
+# data = read_json('Assets\\data.js', orient = 'records')
+# data.to_csv('Assets\\temp.csv')
+
+data = read_csv('Assets\\temp.csv')
+plot(data[data['countrycode'] == 'ARG']['year'], data[data['countrycode'] == 'ARG']['avh'])
+xlabel('Year')
+ylabel('Average work hours per employed citizen')
+show()

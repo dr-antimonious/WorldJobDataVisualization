@@ -12,6 +12,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
         <script src="Assets/world.geo.js"></script>
         <script src="Assets/data.js"></script>
+        <script>
+            const minYear = 1995, maxYear = 2019,
+                yearArray = Array.from({length: (maxYear - minYear) + 1}, (value, index) => `${minYear + index}`),
+                d3YearArray = Array.from({length: (maxYear - minYear) + 1}, (value, index) => d3.timeParse("%Y")(minYear + index));
+        </script>
     </head>
     <body>
         <label class="montserrat-bold" for="mapData">Choose a statistic to be shown on the map:</label><br />
