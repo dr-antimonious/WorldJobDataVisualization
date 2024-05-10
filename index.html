@@ -15,35 +15,56 @@
         <script>
             const minYear = 1995, maxYear = 2019,
                 yearArray = Array.from({length: (maxYear - minYear) + 1}, (value, index) => `${minYear + index}`),
-                d3YearArray = Array.from({length: (maxYear - minYear) + 1}, (value, index) => d3.timeParse("%Y")(minYear + index));
+                d3YearArray = Array.from({length: (maxYear - minYear) + 1}, (value, index) => d3.timeParse("%Y")(minYear + index)),
+                statistics = ["avh", "empperpop", "rgdpeperpop", "rgdpoperpop", "pop", "emp"];
         </script>
     </head>
-    <body>
-        <label class="montserrat-bold" for="mapData">Choose a statistic to be shown on the map:</label><br />
-        <select class="montserrat-regular" name="mapData" id="mapData">
-            <option value="avh">Average work hours per employee per year</option>
-            <option value="empperpop">Percentage of employed citizens</option>
-            <option value="rgdpeperpop">RGDPE per citizen</option>
-            <option value="rgdpoperpop">RGDPO per citizen</option>
-            <option value="pop">Total population</option>
-            <option value="emp">Total employed population</option>
-        </select>
-        <div id="mapContainer" style="overflow: hidden">
-            <svg id="map" width="1400" height="800"></svg>
+    <body class="container">
+        <div id="mapContainer">
+            <svg id="map"></svg>
         </div>
-        <div class="sliderContainer montserrat-bold">
-            <label for="mapYear">Choose a year:</label><br />
-            <input type="range" min="1995" max="2019" value="1995" list="markers" step="1" class="slider" id="mapYear">
-            <datalist id="markers">
-                <option value="1995"></option>
-                <option value="2000"></option>
-                <option value="2005"></option>
-                <option value="2010"></option>
-                <option value="2015"></option>
-                <option value="2019"></option>
-            </datalist>
+        <div id="mapToolsContainer" class="container">
+            <div id="mapDataContainer">
+                <label class="montserrat-bold" for="mapData">Choose a statistic to be shown on the map:</label><br />
+                <select class="montserrat-regular" name="mapData" id="mapData">
+                    <option value="avh">Average work hours per employee per year</option>
+                    <option value="empperpop">Percentage of employed citizens</option>
+                    <option value="rgdpeperpop">RGDPE per citizen</option>
+                    <option value="rgdpoperpop">RGDPO per citizen</option>
+                    <option value="pop">Total population</option>
+                    <option value="emp">Total employed population</option>
+                </select>
+            </div>
+            <div class="montserrat-bold">
+                <label for="mapYear">Choose a year:</label><br />
+                <input type="range" min="1995" max="2019" value="1995" list="mapYearMarkers" step="1" class="slider" id="mapYear">
+                <datalist id="mapYearMarkers">
+                    <option value="1995"></option>
+                    <option value="2000"></option>
+                    <option value="2005"></option>
+                    <option value="2010"></option>
+                    <option value="2015"></option>
+                    <option value="2019"></option>
+                </datalist>
+            </div>
+            <button type="button" id="mapReset">Reset zoom</button>
         </div>
-        <button style="z-index: 10" type="button" id="mapReset">Reset zoom</button>
+        <div id="mapTooltip" class="montserrat-regular"></div>
+        <div id="mapBarPlotContainer" class="container">
+            <label class="montserrat-bold" for="mapBarData">Choose a statistic to be shown on the right axis:</label>
+            <select class="montserrat-regular" name="mapBarData" id="mapBarData">
+                <option value="">Select...</option>
+                <option id="avh" value="avh">Average work hours per employee per year</option>
+                <option id="empperpop" value="empperpop">Percentage of employed citizens</option>
+                <option id="rgdpeperpop" value="rgdpeperpop">RGDPE per citizen</option>
+                <option id="rgdpoperpop" value="rgdpoperpop">RGDPO per citizen</option>
+                <option id="pop" value="pop">Total population</option>
+                <option id="emp" value="emp">Total employed population</option>
+            </select>
+        </div>
+        <div id="mapLegendContainer" class="container">
+            <svg id="mapLegend" class="montserrat-regular"></svg>
+        </div>
         <script src="Scripts/map_script.js"></script>
         <script src="Scripts/scatter_script.js"></script>
     </body>

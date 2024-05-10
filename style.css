@@ -2,65 +2,104 @@
     scroll-behavior: smooth;
 }
 
-.montserrat-thin {
+[class^="montserrat-"] {
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 100;
     font-style: normal;
+}
+
+.montserrat-thin {
+    font-weight: 100;
 }
 
 .montserrat-extra-light {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
     font-weight: 200;
-    font-style: normal;
 }
 
 .montserrat-light {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
     font-weight: 300;
-    font-style: normal;
 }
 
 .montserrat-regular {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
     font-weight: 400;
-    font-style: normal;
 }
 
 .montserrat-medium {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
     font-weight: 500;
-    font-style: normal;
 }
 
 .montserrat-semi-bold {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
     font-weight: 600;
-    font-style: normal;
 }
 
 .montserrat-bold {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
     font-weight: 700;
-    font-style: normal;
 }
 
 .montserrat-extra-bold {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
     font-weight: 800;
-    font-style: normal;
 }
 
 .montserrat-black {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
     font-weight: 900;
-    font-style: normal;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    align-content: space-around;
+    flex-direction: column;
+}
+
+.country {
+    pointer-events: all;
+    cursor: pointer;
+}
+
+#mapTooltip, #mapBarPlotContainer, #mapLegendContainer {
+    position: absolute;
+}
+
+#mapBarPlotContainer, #mapLegendContainer {
+    width: min-content;
+}
+
+#mapTooltip, #mapBarPlotContainer {
+    visibility: hidden;
+}
+
+#mapToolsContainer {
+    flex-direction: row;
+}
+
+#mapContainer {
+    z-index: 0;
+    overflow: hidden;
+    border: 0.25em solid black;
+    width: 82.5vw;
+    height: 85vh;
+}
+
+#mapTooltip {
+    z-index: 15;
+    background: #D3D3D3;
+}
+
+#mapBarPlotContainer {
+    z-index: 10;
+    border: 0.1em solid black;
+    background: white;
+    box-shadow: 5px 5px 5px black;
+}
+
+#mapLegendContainer {
+    top: 67.5vh;
+    left: 10vw;
+    align-items: flex-start;
+}
+
+#mapLegend {
+    z-index: 5;
+    width: 225px;
+    background: transparent;
 }
