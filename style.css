@@ -96,6 +96,7 @@
     top: 67.5vh;
     left: 10vw;
     align-items: flex-start;
+    pointer-events: none;
 }
 
 #mapLegend {

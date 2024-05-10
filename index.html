@@ -21,7 +21,22 @@
     </head>
     <body class="container">
         <div id="mapContainer">
+            <div id="mapBarPlotContainer" class="container">
+                <label class="montserrat-bold" for="mapBarData">Choose a statistic to be shown on the right axis:</label>
+                <select class="montserrat-regular" name="mapBarData" id="mapBarData">
+                    <option value="" data-index="0">Select...</option>
+                    <option id="avh" value="avh">Average work hours per employee per year</option>
+                    <option id="empperpop" value="empperpop">Percentage of employed citizens</option>
+                    <option id="rgdpeperpop" value="rgdpeperpop">RGDPE per citizen</option>
+                    <option id="rgdpoperpop" value="rgdpoperpop">RGDPO per citizen</option>
+                    <option id="pop" value="pop">Total population</option>
+                    <option id="emp" value="emp">Total employed population</option>
+                </select>
+            </div>
             <svg id="map"></svg>
+            <div id="mapLegendContainer" class="container">
+                <svg id="mapLegend" class="montserrat-regular"></svg>
+            </div>
         </div>
         <div id="mapToolsContainer" class="container">
             <div id="mapDataContainer">
@@ -50,21 +65,6 @@
             <button type="button" id="mapReset">Reset zoom</button>
         </div>
         <div id="mapTooltip" class="montserrat-regular"></div>
-        <div id="mapBarPlotContainer" class="container">
-            <label class="montserrat-bold" for="mapBarData">Choose a statistic to be shown on the right axis:</label>
-            <select class="montserrat-regular" name="mapBarData" id="mapBarData">
-                <option value="">Select...</option>
-                <option id="avh" value="avh">Average work hours per employee per year</option>
-                <option id="empperpop" value="empperpop">Percentage of employed citizens</option>
-                <option id="rgdpeperpop" value="rgdpeperpop">RGDPE per citizen</option>
-                <option id="rgdpoperpop" value="rgdpoperpop">RGDPO per citizen</option>
-                <option id="pop" value="pop">Total population</option>
-                <option id="emp" value="emp">Total employed population</option>
-            </select>
-        </div>
-        <div id="mapLegendContainer" class="container">
-            <svg id="mapLegend" class="montserrat-regular"></svg>
-        </div>
         <script src="Scripts/map_script.js"></script>
         <script src="Scripts/scatter_script.js"></script>
     </body>

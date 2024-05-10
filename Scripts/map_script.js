@@ -8,9 +8,10 @@ const mapBarSelector = document.getElementById("mapBarData");
 const mapYearSelector = document.getElementById("mapYear");
 
 // Necessary global variables
-let mapColorScale, mapTooltipColorScale, mapGetter,
+let mapColorScale, mapTooltipColorScale, mapGetter, mapBarGetter,
     mapSelection = mapSelector.value,
     mapYear = parseInt(mapYearSelector.value),
+    mapBarSelection = mapBarSelector.value,
     mapBarPlotVisible = false;
 
 const mapWidth = 82.5 * visualViewport.width / 100,
@@ -58,10 +59,10 @@ const mapProjection = d3.geoMercator()
 // Checks whether the selected statistic is `rgdpeperpop`, `rgdpoperpop`, or `empperpop`
 function mapCheckMode(selection) { return [statistics[2], statistics[3], statistics[1]].includes(selection); }
 
-function mapFindIndex(d, year) {
+function mapFindIndex(countryCode, year) {
     return world_data.findIndex(
         e => (
-            e.countrycode === d.properties.adm0_a3 &&
+            e.countrycode === countryCode &&
             e.year === year
         )
     );
@@ -69,7 +70,7 @@ function mapFindIndex(d, year) {
 
 // Country pointerOver behaviour
 function mapPointerOver(event, d, getter) {
-    const index = mapFindIndex(d, mapYear);
+    const index = mapFindIndex(d.properties.adm0_a3, mapYear);
     let data = "No data";
     if (index !== -1) {
         switch (mapSelection) {
@@ -87,7 +88,7 @@ function mapPointerOver(event, d, getter) {
 
 // Country pointerMove behaviour
 function mapPointerMove(event, d, getter) {
-    const index = mapFindIndex(d, mapYear);
+    const index = mapFindIndex(d.properties.adm0_a3, mapYear);
     const color = index === -1 ? "#D3D3D3" : mapColorScale(getter(index));
     const textColor = index === -1 ? "#000000" : mapTooltipColorScale(getter(index));
     return mapTooltip.style("top", `${event.pageY + 20}px`)
@@ -107,8 +108,18 @@ function mapPointerOut(event) {
 // Country click behaviour
 function mapClick(event, d, getter) {
     let data = [];
+
+    if (d.properties.adm0_a3 !== mapBarPlot.attr("id"))
+    {
+        mapBarPlot.attr("id", d.properties.adm0_a3);
+        mapBarSecondLine.style("visibility", "hidden");
+        mapBarRightAxis.style("visibility", "hidden");
+        mapBarSelector.value = "";
+    }
+
+    const countryCode = mapBarPlot.attr("id");
     yearArray.forEach((year, i) => {
-        const index = mapFindIndex(d, parseInt(year));
+        const index = mapFindIndex(countryCode, parseInt(year));
         if (index !== -1) { data.push({year: d3YearArray[i], value: getter(index)}) }
     });
 
@@ -117,29 +128,27 @@ function mapClick(event, d, getter) {
         return mapBarPlotContainer.style("visibility", "hidden");
     }
 
-    const mapBarLeftAxis = d3.scaleLinear()
+    const mapBarLeftAxisValues = d3.scaleLinear()
         .domain([d3.min(data, (d) => d.value) * 0.95,
             d3.max(data, (d) => d.value) * 1.05])
         .range([mapBarHeight, 0]);
-    mapBarPlotSpace.select("g#mapBarLeftAxis")
-        .call(d3.axisLeft(mapBarLeftAxis));
+    mapBarLeftAxis.call(d3.axisLeft(mapBarLeftAxisValues));
 
-    mapBarPlotSpace.select("path#mapBarLine")
-        .datum(data)
+    mapBarLine.datum(data)
         .transition().duration(250)
         .attr("fill", "none")
-        .attr("stroke", () => mapFillFunction(d, getter))
+        .attr("stroke", () => mapFillFunction(countryCode, getter))
         .attr("stroke-width", "1.5px")
         .attr("d", d3.line()
             .x(d => mapBarTimeAxis(d.year))
-            .y(d => mapBarLeftAxis(d.value)));
+            .y(d => mapBarLeftAxisValues(d.value)));
 
     mapBarPlotContainer
-        .style("top", (event.pageY - 20) + mapBarHeight + mapBarMargin.top + mapBarMargin.bottom > visualViewport.height
-            ? `${event.pageY - mapBarHeight - mapBarMargin.top - mapBarMargin.bottom}px`
+        .style("top", (event.pageY - 20) + mapBarPlotContainer.node().getBoundingClientRect().height > mapHeight
+            ? `${event.pageY - mapBarPlotContainer.node().getBoundingClientRect().height}px`
             : `${event.pageY - 20}px`)
-        .style("left", (event.pageX + 20) + mapBarWidth + mapBarMargin.left + mapBarMargin.right > visualViewport.width
-            ? `${event.pageX - 20 - mapBarWidth - mapBarMargin.left - mapBarMargin.right}px`
+        .style("left", (event.pageX + 20) + mapBarPlotContainer.node().getBoundingClientRect().width > mapWidth
+            ? `${event.pageX - 20 - mapBarPlotContainer.node().getBoundingClientRect().width}px`
             : `${event.pageX + 20}px`)
         .style("visibility", "visible");
 
@@ -147,8 +156,8 @@ function mapClick(event, d, getter) {
 }
 
 // Country fill function
-function mapFillFunction(d, getter) {
-    const index = mapFindIndex(d, mapYear);
+function mapFillFunction(countryCode, getter) {
+    const index = mapFindIndex(countryCode, mapYear);
     if (index === -1) return "#D3D3D3";
     return mapColorScale(getter(index));
 }
@@ -244,6 +253,29 @@ function mapSelectionFunction(selection) {
 }
 mapSelectionFunction(mapSelection);
 
+function mapBarSelectionFunction(selection) {
+    switch (selection) {
+        case statistics[0]:
+            mapBarGetter = getAvh;
+            break;
+        case statistics[1]:
+            mapBarGetter = getEmpPerPop;
+            break;
+        case statistics[2]:
+            mapBarGetter = getRgdpePerPop;
+            break;
+        case statistics[3]:
+            mapBarGetter = getRgdpoPerPop;
+            break;
+        case statistics[4]:
+            mapBarGetter = getPop;
+            break;
+        case statistics[5]:
+            mapBarGetter = getEmp;
+            break;
+    }
+}
+
 const mapTooltip = d3.select("div#mapTooltip"),
     mapBarPlotContainer = d3.select("div#mapBarPlotContainer"),
     mapBarPlot = mapBarPlotContainer.append("svg")
@@ -259,13 +291,20 @@ const mapTooltip = d3.select("div#mapTooltip"),
 
 const mapBarTimeAxis = d3.scaleTime()
     .domain(d3.extent(d3YearArray, (d) => d))
-    .range([0, mapBarWidth]);
+    .range([0, mapBarWidth]),
+    mapBarLeftAxis = mapBarPlotSpace.append("g")
+        .attr("id", "mapBarLeftAxis"),
+    mapBarRightAxis = mapBarPlotSpace.append("g")
+        .attr("id", "mapBarRightAxis")
+        .attr("transform", `translate(${mapBarWidth},0)`),
+    mapBarLine = mapBarPlotSpace.append("path")
+        .attr("id", "mapBarLine"),
+    mapBarSecondLine = mapBarPlotSpace.append("path")
+        .attr("id", "mapBarSecondLine");
 
 mapBarPlotSpace.append("g")
     .attr("transform", "translate(0," + mapBarHeight + ")")
     .call(d3.axisBottom(mapBarTimeAxis));
-mapBarPlotSpace.append("g").attr("id", "mapBarLeftAxis");
-mapBarPlotSpace.append("path").attr("id", "mapBarLine");
 
 function mapStrokeColor() { return mapCheckMode(mapSelection) ? "black" : "white"; }
 function mapStrokeWidth() { return mapCheckMode(mapSelection) ? "0.1px" : "0.25px"; }
@@ -277,7 +316,7 @@ mapSvg.selectAll("path.country")
     .attr("class", "country")
     .attr("id", (d) => d.properties.adm0_a3)
     .attr("d", d3.geoPath().projection(mapProjection))
-    .attr("fill", (d) => mapFillFunction(d, mapGetter))
+    .attr("fill", (d) => mapFillFunction(d.properties.adm0_a3, mapGetter))
     .attr("stroke", () => mapStrokeColor())
     .attr("stroke-width", () => mapStrokeWidth())
     .on("pointerover", (event, d) => mapPointerOver(event, d, mapGetter))
@@ -296,7 +335,7 @@ function mapEventFunction(getter) {
         .merge(mapSvg.selectAll("path.country").data(world.features))
         .transition()
         .duration(500)
-        .attr("fill", (d) => mapFillFunction(d, getter))
+        .attr("fill", (d) => mapFillFunction(d.properties.adm0_a3, getter))
         .attr("stroke", () => mapStrokeColor())
         .attr("stroke-width", () => mapStrokeWidth());
 }
@@ -313,4 +352,33 @@ mapSelector.addEventListener("change", (event) => {
 mapYearSelector.addEventListener("change", (event) => {
     mapYear = parseInt(event.target.value);
     mapEventFunction(mapGetter);
+});
+
+mapBarSelector.addEventListener("change", (event) => {
+    mapBarSelection = event.target.value;
+    mapBarSelectionFunction(mapBarSelection);
+
+    let data = [];
+    const countryCode = mapBarPlot.attr("id");
+    yearArray.forEach((year, i) => {
+        const index = mapFindIndex(countryCode, parseInt(year));
+        if (index !== -1) { data.push({year: d3YearArray[i], value: mapBarGetter(index)}) }
+    });
+
+    const mapBarRightAxisValues = d3.scaleLinear()
+        .domain([d3.min(data, (d) => d.value) * 0.95,
+            d3.max(data, (d) => d.value) * 1.05])
+        .range([mapBarHeight, 0]);
+    mapBarRightAxis.call(d3.axisRight(mapBarRightAxisValues))
+        .style("visibility", "visible");
+
+    mapBarSecondLine.datum(data)
+        .transition().duration(250)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", "1.5px")
+        .attr("d", d3.line()
+            .x(d => mapBarTimeAxis(d.year))
+            .y(d => mapBarRightAxisValues(d.value)))
+        .style("visibility", "visible");
 });
