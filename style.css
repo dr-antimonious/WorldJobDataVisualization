@@ -8,6 +8,23 @@
     font-style: normal;
 }
 
+datalist {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 20vw;
+}
+
+.mapYearOptions {
+    padding: 0.3vh;
+    font-size: 0.8em;
+}
+
+input[type="range"] {
+    width: 20vw;
+    margin: 0;
+}
+
 .montserrat-thin {
     font-weight: 100;
 }
@@ -49,6 +66,14 @@
     align-items: center;
     align-content: space-around;
     flex-direction: column;
+}
+
+.row-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row;
+    width: 100%;
 }
 
 .country {
@@ -93,8 +118,8 @@
 }
 
 #mapLegendContainer {
-    top: 67.5vh;
-    left: 10vw;
+    top: 62.5vh;
+    left: 15vw;
     align-items: flex-start;
     pointer-events: none;
 }
@@ -102,5 +127,7 @@
 #mapLegend {
     z-index: 5;
     width: 225px;
-    background: transparent;
+    background: white;
+    padding-top: 1vh;
+    padding-left: 1vw;
 }
