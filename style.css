@@ -97,12 +97,15 @@ input[type="range"] {
     flex-direction: row;
 }
 
-#mapContainer {
+#mapContainer, #scatterContainer {
     z-index: 0;
     overflow: hidden;
-    border: 0.25em solid black;
     width: 82.5vw;
     height: 85vh;
+}
+
+#mapContainer {
+    border: 0.25em solid black;
 }
 
 #mapTooltip {
@@ -122,11 +125,12 @@ input[type="range"] {
     left: 15vw;
     align-items: flex-start;
     pointer-events: none;
+    border: 0.1em solid black;
 }
 
 #mapLegend {
     z-index: 5;
-    width: 225px;
+    width: 160px;
     background: white;
     padding-top: 1vh;
     padding-left: 1vw;

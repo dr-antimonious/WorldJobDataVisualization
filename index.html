@@ -18,6 +18,7 @@
                 d3YearArray = Array.from({length: (maxYear - minYear) + 1}, (value, index) => d3.timeParse("%Y")(minYear + index)),
                 statistics = ["avh", "empperpop", "rgdpeperpop", "rgdpoperpop", "pop", "emp"];
         </script>
+        <script src="Scripts/script.js"></script>
     </head>
     <body class="container">
         <div id="mapContainer">
@@ -27,10 +28,10 @@
                         <label class="montserrat-bold" for="mapBarData" style="padding-bottom: 0.5vh; padding-top: 0.25vh;">Choose a statistic to be shown on the right axis:</label>
                         <select class="montserrat-regular" name="mapBarData" id="mapBarData">
                             <option class="mapBarOptions" value="" data-index="0">Select...</option>
-                            <option class="mapBarOptions" id="avh" value="avh">Average work hours per employee per year</option>
+                            <option class="mapBarOptions" id="avh" value="avh">Yearly work hours per employee</option>
                             <option class="mapBarOptions" id="empperpop" value="empperpop">Percentage of employed citizens</option>
-                            <option class="mapBarOptions" id="rgdpeperpop" value="rgdpeperpop">RGDPE per citizen</option>
-                            <option class="mapBarOptions" id="rgdpoperpop" value="rgdpoperpop">RGDPO per citizen</option>
+                            <option class="mapBarOptions" id="rgdpeperpop" value="rgdpeperpop">RGDPE per citizen (in 2017 USD)</option>
+                            <option class="mapBarOptions" id="rgdpoperpop" value="rgdpoperpop">RGDPO per citizen (in 2017 USD)</option>
                             <option class="mapBarOptions" id="pop" value="pop">Total population</option>
                             <option class="mapBarOptions" id="emp" value="emp">Total employed population</option>
                         </select>
@@ -70,9 +71,49 @@
             </div>
             <div class="row-container" style="width: fit-content">
                 <button type="button" id="mapReset">Reset zoom</button>
+                <button type="button" id="mapTimerStart" onclick="startMapTimer()">Play timelapse</button>
+                <button type="button" id="mapTimerStop" onclick="if (mapTimer !== undefined) mapTimer.stop();">Stop timelapse</button>
             </div>
         </div>
         <div id="mapTooltip" class="montserrat-regular"></div>
+        <hr style="border-top: 0.1vh dashed black; width: 95%">
+        <div id="scatterContainer"></div>
+        <div id="scatterToolsContainer" class="row-container">
+            <div id="scatterYAxisDataContainer" class="container">
+                <label class="montserrat-bold" for="scatterYAxisData" style="padding-bottom: 0.5vh;">Y axis statistic:</label>
+                <select class="montserrat-regular" name="scatterYAxisData" id="scatterYAxisData">
+                    <option value="rgdpeperpop">RGDPE per citizen (in 2017 USD)</option>
+                    <option value="rgdpoperpop">RGDPO per citizen (in 2017 USD)</option>
+                </select>
+            </div>
+            <div id="scatterXAxisDataContainer" class="container">
+                <label class="montserrat-bold" for="scatterXAxisData" style="padding-bottom: 0.5vh;">X axis statistic:</label>
+                <select class="montserrat-regular" name="scatterXAxisData" id="scatterXAxisData">
+                    <option value="avh">Yearly work hours per employee</option>
+                    <option value="empperpop">Percentage of employed citizens</option>
+                    <option value="rgdpeperpop">RGDPE per citizen (in 2017 USD)</option>
+                    <option value="rgdpoperpop">RGDPO per citizen (in 2017 USD)</option>
+                    <option value="emp">Total employed population</option>
+                </select>
+            </div>
+            <div class="montserrat-bold container">
+                <label for="scatterYear" style="padding-top: 0.25vh;">Choose a year: <span class="montserrat-regular" id="scatterYearLabel">1995</span></label>
+                <input type="range" min="1995" max="2019" value="1995" list="scatterYearMarkers" step="1" class="slider" id="scatterYear">
+                <datalist id="scatterYearMarkers">
+                    <option class="mapYearOptions" value="1995">1995</option>
+                    <option class="mapYearOptions" value="2000">2000</option>
+                    <option class="mapYearOptions" value="2005">2005</option>
+                    <option class="mapYearOptions" value="2010">2010</option>
+                    <option class="mapYearOptions" value="2015">2015</option>
+                    <option class="mapYearOptions" value="2019">2019</option>
+                </datalist>
+            </div>
+            <div class="row-container" style="width: fit-content">
+                <button type="button" id="scatterReset">Reset zoom</button>
+                <button type="button" id="scatterTimerStart" onclick="startMapTimer()">Play timelapse</button>
+                <button type="button" id="scatterTimerStop" onclick="mapTimer.stop()">Stop timelapse</button>
+            </div>
+        </div>
         <script src="Scripts/map_script.js"></script>
         <script src="Scripts/scatter_script.js"></script>
     </body>
