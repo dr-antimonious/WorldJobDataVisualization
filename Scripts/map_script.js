@@ -1,5 +1,3 @@
-// TODO: Add line chart tooltip
-
 "use strict";
 
 // Statistic selection dropdown menu
@@ -134,8 +132,7 @@ function mapPointerOut(event) {
 function mapClick(event, d, getter) {
     let data = [];
 
-    if (d.properties.adm0_a3 !== mapBarPlot.attr("id"))
-    {
+    if (d.properties.adm0_a3 !== mapBarPlot.attr("id")) {
         mapBarPlot.attr("id", d.properties.adm0_a3);
         hideMapBarRightValues();
         mapBarSelector.value = "";
@@ -340,12 +337,6 @@ mapBarPlot.append("text")
     .attr("x", (mapBarWidth + mapBarMargin.left + mapBarMargin.right) / 2)
     .attr("y", mapBarHeight + mapBarMargin.top + mapBarMargin.bottom - 10)
     .text("Year");
-
-mapBarPlotSpace.append('rect')
-    .style("fill", "none")
-    .style("pointer-events", "all")
-    .attr('width', mapBarWidth)
-    .attr('height', mapBarHeight)
 
 const mapBarTimeAxis = d3.scaleTime()
     .domain(d3.extent(d3YearArray, (d) => d))

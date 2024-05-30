@@ -81,15 +81,15 @@ input[type="range"] {
     cursor: pointer;
 }
 
-#mapTooltip, #mapBarPlotContainer, #mapLegendContainer {
+#mapTooltip, #scatterTooltip, #rankTooltip, #mapBarPlotContainer, #mapLegendContainer, #scatterLegendContainer, #rankLegendContainer {
     position: absolute;
 }
 
-#mapBarPlotContainer, #mapLegendContainer {
+#mapBarPlotContainer, #mapLegendContainer, #scatterLegendContainer, #rankLegendContainer {
     width: min-content;
 }
 
-#mapTooltip, #mapBarPlotContainer {
+#mapTooltip, #scatterTooltip, #rankTooltip, #mapBarPlotContainer {
     visibility: hidden;
 }
 
@@ -97,7 +97,7 @@ input[type="range"] {
     flex-direction: row;
 }
 
-#mapContainer, #scatterContainer {
+#mapContainer, #scatterContainer, #rankContainer {
     z-index: 0;
     overflow: hidden;
     width: 82.5vw;
@@ -108,9 +108,10 @@ input[type="range"] {
     border: 0.25em solid black;
 }
 
-#mapTooltip {
+#mapTooltip, #scatterTooltip, #rankTooltip {
     z-index: 15;
     background: #D3D3D3;
+    white-space: pre-wrap;
 }
 
 #mapBarPlotContainer {
@@ -120,18 +121,35 @@ input[type="range"] {
     box-shadow: 5px 5px 5px black;
 }
 
-#mapLegendContainer {
-    top: 62.5vh;
-    left: 15vw;
+#mapLegendContainer, #scatterLegendContainer, #rankLegendContainer {
     align-items: flex-start;
     pointer-events: none;
     border: 0.1em solid black;
 }
 
-#mapLegend {
+#mapLegendContainer {
+    top: 62.5vh;
+    left: 15vw;
+}
+
+#scatterLegendContainer {
+    top: 130vh;
+    left: 5vw;
+}
+
+#rankLegendContainer {
+    top: 255vh;
+    left: 80vw;
+}
+
+#mapLegend, #scatterLegend, #rankLegend {
     z-index: 5;
     width: 160px;
     background: white;
     padding-top: 1vh;
     padding-left: 1vw;
+}
+
+#scatterLegend, #rankLegend {
+    height: 130px;
 }

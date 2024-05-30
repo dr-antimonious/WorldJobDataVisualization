@@ -77,7 +77,12 @@
         </div>
         <div id="mapTooltip" class="montserrat-regular"></div>
         <hr style="border-top: 0.1vh dashed black; width: 95%">
-        <div id="scatterContainer"></div>
+        <div id="scatterContainer">
+            <svg id="scatter"></svg>
+            <div id="scatterLegendContainer" class="container">
+                <svg id="scatterLegend" class="montserrat-regular"></svg>
+            </div>
+        </div>
         <div id="scatterToolsContainer" class="row-container">
             <div id="scatterYAxisDataContainer" class="container">
                 <label class="montserrat-bold" for="scatterYAxisData" style="padding-bottom: 0.5vh;">Y axis statistic:</label>
@@ -109,12 +114,57 @@
                 </datalist>
             </div>
             <div class="row-container" style="width: fit-content">
-                <button type="button" id="scatterReset">Reset zoom</button>
-                <button type="button" id="scatterTimerStart" onclick="startMapTimer()">Play timelapse</button>
-                <button type="button" id="scatterTimerStop" onclick="mapTimer.stop()">Stop timelapse</button>
+                <button type="button" id="scatterTimerStart" onclick="startScatterTimer()">Play timelapse</button>
+                <button type="button" id="scatterTimerStop" onclick="scatterTimer.stop()">Stop timelapse</button>
             </div>
         </div>
+        <div id="scatterTooltip" class="montserrat-regular"></div>
+        <hr style="border-top: 0.1vh dashed black; width: 95%">
+        <div id="rankContainer">
+            <svg id="rank"></svg>
+            <div id="rankLegendContainer" class="container">
+                <svg id="rankLegend" class="montserrat-regular"></svg>
+            </div>
+        </div>
+        <div id="rankToolsContainer" class="row-container">
+            <div id="rankTopBottomDataContainer" class="container">
+                <label class="montserrat-bold" for="rankTopBottomData" style="padding-bottom: 0.5vh;">Highest or lowest:</label>
+                <select class="montserrat-regular" name="rankTopBottomData" id="rankTopBottomData">
+                    <option value="top">Top 20</option>
+                    <option value="bottom">Bottom 20</option>
+                </select>
+            </div>
+            <div id="rankXAxisDataContainer" class="container">
+                <label class="montserrat-bold" for="rankXAxisData" style="padding-bottom: 0.5vh;">Choose a statistic:</label>
+                <select class="montserrat-regular" name="rankXAxisData" id="rankXAxisData">
+                    <option value="avh">Yearly work hours per employee</option>
+                    <option value="empperpop">Percentage of employed citizens</option>
+                    <option value="rgdpeperpop">RGDPE per citizen (in 2017 USD)</option>
+                    <option value="rgdpoperpop">RGDPO per citizen (in 2017 USD)</option>
+                    <option value="pop">Total population</option>
+                    <option value="emp">Total employed population</option>
+                </select>
+            </div>
+            <div class="montserrat-bold container">
+                <label for="rankYear" style="padding-top: 0.25vh;">Choose a year: <span class="montserrat-regular" id="rankYearLabel">1995</span></label>
+                <input type="range" min="1995" max="2019" value="1995" list="rankYearMarkers" step="1" class="slider" id="rankYear">
+                <datalist id="rankYearMarkers">
+                    <option class="mapYearOptions" value="1995">1995</option>
+                    <option class="mapYearOptions" value="2000">2000</option>
+                    <option class="mapYearOptions" value="2005">2005</option>
+                    <option class="mapYearOptions" value="2010">2010</option>
+                    <option class="mapYearOptions" value="2015">2015</option>
+                    <option class="mapYearOptions" value="2019">2019</option>
+                </datalist>
+            </div>
+            <div class="row-container" style="width: fit-content">
+                <button type="button" id="rankTimerStart" onclick="startRankTimer()">Play timelapse</button>
+                <button type="button" id="rankTimerStop" onclick="rankTimer.stop()">Stop timelapse</button>
+            </div>
+        </div>
+        <div id="rankTooltip" class="montserrat-regular"></div>
         <script src="Scripts/map_script.js"></script>
         <script src="Scripts/scatter_script.js"></script>
+        <script src="Scripts/rank_script.js"></script>
     </body>
 </html>
