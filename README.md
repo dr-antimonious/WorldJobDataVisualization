@@ -1,5 +1,5 @@
 # World job data visualization
 
-Work in progress
+Alas, the Labor of Sisyphus is finished.
 
-Link: [Clik me!](https://dr-antimonious.github.io/WorldJobDataVisualization/)
+Link: [Labor of Sisyphus](https://dr-antimonious.github.io/WorldJobDataVisualization/)
