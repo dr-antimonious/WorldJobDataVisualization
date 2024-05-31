@@ -38,7 +38,7 @@ function getCountries() {
 
 function findMax(){
     let values = [];
-    world_data.forEach((e) => {
+    rankCountries.forEach((e) => {
         if (e.year === rankYear) values.push(rankXAxisGetter(e));
     });
     return Math.max(...values);
@@ -142,6 +142,12 @@ rankPlot.selectAll("rect")
     .on("pointerout", () => rankPointerOut());
 
 function rankEvent(duration) {
+    setTimeout(() => {
+        rankPlot.selectAll("rect")
+            .on("pointerover", (event, d) => rankPointerOver(event, d, rankXAxisGetter))
+            .on("pointermove", (event, d) => rankPointerMove(event, d))
+            .on("pointerout", () => rankPointerOut());
+    }, duration);
     rankPlot.selectAll("rect")
         .data(countryCodes)
         .enter()
@@ -161,16 +167,27 @@ function rankEvent(duration) {
         .attr("fill", (d) => continentColor(getContinent(d)));
 }
 
+function disableTooltip() {
+    rankPlot.selectAll("rect")
+        .on("pointerover", null)
+        .on("pointermove", null)
+        .on("pointerout", null);
+}
+
 rankTopBottomSelector.addEventListener("change", (event) => {
+    disableTooltip();
     rankTopBottomSelection = event.target.value;
     rankGetterMode = rankTopBottomSelection === 'top';
     getCountries();
+    rankXAxis.domain([0, findMax()]);
+    rankPlotXAxis.transition().call(d3.axisTop(rankXAxis));
     rankYAxis.domain(rankCountries.map((d) => getCountry(d.countrycode)));
     rankPlotYAxis.transition().call(d3.axisLeft(rankYAxis));
     rankEvent(500);
 });
 
 rankXAxisSelector.addEventListener("change", (event) => {
+    disableTooltip();
     rankXAxisSelection = event.target.value;
     rankXAxisGetter = rankSelectionFunction(rankXAxisSelection);
     getCountries();
@@ -182,6 +199,7 @@ rankXAxisSelector.addEventListener("change", (event) => {
 });
 
 rankYearSelector.addEventListener("input", (event) => {
+    disableTooltip();
     rankYear = parseInt(event.target.value);
     rankYearLabel.innerHTML = event.target.value;
     getCountries();
