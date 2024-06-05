@@ -15,6 +15,11 @@ const rankYearLabel = document.getElementById("rankYearLabel");
 // Map time animation timer
 let rankTimer = undefined;
 
+/**
+ * Start rank time animation
+ *
+ * Prema: d3-timer <https://d3js.org/d3-timer#interval>
+ */
 function startRankTimer() {
     if (rankTimer !== undefined) rankTimer.stop();
     rankTimer = d3.interval(() => {
@@ -26,6 +31,9 @@ function startRankTimer() {
 function descSort(a, b) { return a < b ? 1 : a > b ? -1 : 0; }
 function ascSort(a, b) { return a > b ? 1 : a < b ? -1 : 0; }
 
+/**
+ * Prema: MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort>
+ */
 function getCountries() {
     oldRankCountries = rankCountries;
     rankCountries = world_data.filter((d) => d.year === rankYear)
@@ -36,6 +44,11 @@ function getCountries() {
         .sort((a, b) => descSort(rankXAxisGetter(a), rankXAxisGetter(b)));
 }
 
+/**
+ * Prema: Stack Overflow <https://stackoverflow.com/questions/42859220/min-and-max-values-of-an-array-of-dictionaries-json>
+ *
+ * Prema: MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max>
+ */
 function findMax(){
     let values = [];
     rankCountries.forEach((e) => {
@@ -52,6 +65,9 @@ function rankTooltipGetter(d, getter) {
     }
 }
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/interactivity_tooltip.html>
+ */
 function rankPointerOver(event, d, getter) {
     let data = rankTooltipGetter(d, getter);
     d3.select(event.currentTarget)
@@ -61,6 +77,9 @@ function rankPointerOver(event, d, getter) {
     return rankTooltip.style("visibility", "visible");
 }
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/interactivity_tooltip.html>
+ */
 function rankPointerMove(event, d) {
     const color = continentColor(getContinent(d));
     const textColor = "white";
@@ -70,6 +89,9 @@ function rankPointerMove(event, d) {
         .style("color", textColor);
 }
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/interactivity_tooltip.html>
+ */
 function rankPointerOut() {
     return rankTooltip.style("visibility", "hidden");
 }
@@ -123,6 +145,9 @@ const rankPlotYAxis = rankPlot.append("g")
         .attr("transform", "translate(0,0)")
         .call(d3.axisTop(rankXAxis));
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/barplot_horizontal.html>
+ */
 rankPlot.selectAll("rect")
     .data(countryCodes)
     .enter()
@@ -141,6 +166,9 @@ rankPlot.selectAll("rect")
     .on("pointermove", (event, d) => rankPointerMove(event, d))
     .on("pointerout", () => rankPointerOut());
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/barplot_horizontal.html>
+ */
 function rankEvent(duration) {
     setTimeout(() => {
         rankPlot.selectAll("rect")
@@ -174,6 +202,9 @@ function disableTooltip() {
         .on("pointerout", null);
 }
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/barplot_horizontal.html>
+ */
 rankTopBottomSelector.addEventListener("change", (event) => {
     disableTooltip();
     rankTopBottomSelection = event.target.value;
@@ -186,6 +217,9 @@ rankTopBottomSelector.addEventListener("change", (event) => {
     rankEvent(500);
 });
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/barplot_horizontal.html>
+ */
 rankXAxisSelector.addEventListener("change", (event) => {
     disableTooltip();
     rankXAxisSelection = event.target.value;
@@ -198,6 +232,9 @@ rankXAxisSelector.addEventListener("change", (event) => {
     rankEvent(500);
 });
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/barplot_horizontal.html>
+ */
 rankYearSelector.addEventListener("input", (event) => {
     disableTooltip();
     rankYear = parseInt(event.target.value);

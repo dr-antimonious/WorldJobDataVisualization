@@ -32,6 +32,11 @@ let mapColorScale, mapTooltipColorScale, mapGetter, mapBarGetter,
 // Map time animation timer
 let mapTimer = undefined;
 
+/**
+ * Start map time animation
+ *
+ * Prema: d3-timer <https://d3js.org/d3-timer#interval>
+ */
 function startMapTimer() {
     if (mapTimer !== undefined) mapTimer.stop();
     mapTimer = d3.interval(() => {
@@ -51,7 +56,11 @@ const mapSvg = d3.select("#map")
     .attr("width", mapWidth)
     .attr("height", mapHeight);
 
-// Map zoom behaviour
+/**
+ * Map zoom behaviour
+ *
+ * Prema: d3-zoom <https://d3js.org/d3-zoom>
+ */
 const mapZoom = d3.zoom()
     .extent([[0, 0], [mapWidth, mapHeight]])
     .scaleExtent([1, 10])
@@ -61,7 +70,11 @@ const mapZoom = d3.zoom()
         return (!event.ctrlKey || event.type === 'wheel') && !event.button;
     });
 
-// Map reset button behaviour
+/**
+ * Map reset button behaviour
+ *
+ * Prema: Stack Overflow <https://stackoverflow.com/questions/48790190/how-to-reset-zoom-in-d3-js>
+ */
 document.getElementById("mapReset")
     .addEventListener("click", () => {
         mapSvg.transition()
@@ -91,7 +104,11 @@ function hideMapBarRightValues() {
     mapBarRightAxisLabel.style("visibility", "hidden");
 }
 
-// Country pointerOver behaviour
+/**
+ * Country pointerOver behaviour
+ *
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/interactivity_tooltip.html>
+ */
 function mapPointerOver(event, d, getter) {
     const index = findIndex(d.properties.adm0_a3, mapYear);
     let data = "No data";
@@ -109,7 +126,11 @@ function mapPointerOver(event, d, getter) {
     return mapTooltip.style("visibility", "visible");
 }
 
-// Country pointerMove behaviour
+/**
+ * Country pointerMove behaviour
+ *
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/interactivity_tooltip.html>
+ */
 function mapPointerMove(event, d, getter) {
     const index = findIndex(d.properties.adm0_a3, mapYear);
     const color = index === -1 ? "#D3D3D3" : mapColorScale(getter(index));
@@ -120,7 +141,11 @@ function mapPointerMove(event, d, getter) {
         .style("color", textColor);
 }
 
-// Country pointerOut behaviour
+/**
+ * Country pointerOut behaviour
+ *
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/interactivity_tooltip.html>
+ */
 function mapPointerOut(event) {
     d3.select(event.currentTarget)
         .transition().duration(100)
@@ -166,6 +191,7 @@ function mapClick(event, d, getter) {
             .x(d => mapBarTimeAxis(d.year))
             .y(d => mapBarLeftAxisValues(d.value)));
 
+    // Prema: Stack Overflow <https://stackoverflow.com/questions/294250/how-do-i-retrieve-an-html-elements-actual-width-and-height>
     mapBarPlotContainer
         .style("top", (event.pageY - 20) + mapBarPlotContainer.node().getBoundingClientRect().height > mapHeight
             ? `${event.pageY - mapBarPlotContainer.node().getBoundingClientRect().height}px`
@@ -358,6 +384,9 @@ mapBarPlotSpace.append("g")
 function mapStrokeColor() { return mapCheckMode(mapSelection) ? "black" : "white"; }
 function mapStrokeWidth() { return mapCheckMode(mapSelection) ? "0.1px" : "0.25px"; }
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/choropleth_basic.html>
+ */
 mapSvg.selectAll("path.country")
     .data(world.features)
     .enter()
@@ -375,6 +404,9 @@ mapSvg.selectAll("path.country")
 
 mapLegendElement.call(mapLegend);
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/choropleth_basic.html>
+ */
 function mapEventFunction(getter) {
     mapSvg.selectAll("path.country")
         .data(world.features)
@@ -395,6 +427,9 @@ function hideMapBarPlot() {
     hideMapBarRightValues();
 }
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/choropleth_basic.html>
+ */
 mapSelector.addEventListener("change", (event) => {
     mapSelection = event.target.value;
     mapSelectionFunction(mapSelection);
@@ -404,6 +439,9 @@ mapSelector.addEventListener("change", (event) => {
     hideMapBarPlot();
 });
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/choropleth_basic.html>
+ */
 mapYearSelector.addEventListener("input", (event) => {
     mapYear = parseInt(event.target.value);
     mapYearLabel.innerHTML = event.target.value;

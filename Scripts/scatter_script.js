@@ -12,9 +12,14 @@ const scatterYearSelector = document.getElementById("scatterYear");
 // Scatter year selection slider label
 const scatterYearLabel = document.getElementById("scatterYearLabel");
 
-// Map time animation timer
+// Scatter time animation timer
 let scatterTimer = undefined;
 
+/**
+ * Start scatter time animation
+ *
+ * Prema: d3-timer <https://d3js.org/d3-timer#interval>
+ */
 function startScatterTimer() {
     if (scatterTimer !== undefined) scatterTimer.stop();
     scatterTimer = d3.interval(() => {
@@ -23,6 +28,11 @@ function startScatterTimer() {
     }, 1000);
 }
 
+/**
+ * Prema: Stack Overflow <https://stackoverflow.com/questions/42859220/min-and-max-values-of-an-array-of-dictionaries-json>
+ *
+ * Prema: MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/min>
+ */
 function findDomain(year, getter) {
     let values = [];
     world_data.forEach((e, index) => {
@@ -51,6 +61,9 @@ function scatterTooltipGetter(d, getter) {
     }
 }
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/interactivity_tooltip.html>
+ */
 function scatterPointerOver(event, d, XGetter, YGetter) {
     let XData = scatterTooltipGetter(d, XGetter),
         YData = scatterTooltipGetter(d, YGetter),
@@ -65,6 +78,9 @@ Population: ${populationData}`);
     return scatterTooltip.style("visibility", "visible");
 }
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/interactivity_tooltip.html>
+ */
 function scatterPointerMove(event, d) {
     const color = continentColor(getContinent(d));
     const textColor = "white";
@@ -74,6 +90,9 @@ function scatterPointerMove(event, d) {
         .style("color", textColor);
 }
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/interactivity_tooltip.html>
+ */
 function scatterPointerOut() {
     return scatterTooltip.style("visibility", "hidden");
 }
@@ -128,6 +147,9 @@ const scatterPlotYAxis = scatterPlot.append("g")
         .call(d3.axisBottom(scatterXAxis)),
     scatterPlotDots = scatterPlot.append("g");
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/scatter_grouped_highlight.html>
+ */
 scatterPlotDots.selectAll("dot")
     .data(countryCodes)
     .enter()
@@ -141,6 +163,9 @@ scatterPlotDots.selectAll("dot")
     .on("pointermove", (event, d) => scatterPointerMove(event, d))
     .on("pointerout", () => scatterPointerOut());
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/scatter_grouped_highlight.html>
+ */
 scatterXAxisSelector.addEventListener("change", (event) => {
     scatterXAxisSelection = event.target.value;
     scatterXAxisGetter = scatterSelectionFunction(scatterXAxisSelection);
@@ -155,6 +180,9 @@ scatterXAxisSelector.addEventListener("change", (event) => {
         .attr("cx", (d) => scatterXAxis(scatterGetter(d, scatterXAxisGetter)));
 });
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/scatter_grouped_highlight.html>
+ */
 scatterYAxisSelector.addEventListener("change", (event) => {
     scatterYAxisSelection = event.target.value;
     scatterYAxisGetter = scatterSelectionFunction(scatterYAxisSelection);
@@ -169,6 +197,9 @@ scatterYAxisSelector.addEventListener("change", (event) => {
         .attr("cy", (d) => scatterYAxis(scatterGetter(d, scatterYAxisGetter)));
 });
 
+/**
+ * Prema: D3.js Graph Gallery <https://d3-graph-gallery.com/graph/scatter_grouped_highlight.html>
+ */
 scatterYearSelector.addEventListener("input", (event) => {
     scatterYear = parseInt(event.target.value);
     scatterYearLabel.innerHTML = event.target.value;

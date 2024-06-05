@@ -1,7 +1,8 @@
 "use strict";
 
-const countryCodes = [...new Set(world_data.map(d => d.countrycode))],
-    regions = new Set(world.features.map(d => d.properties.continent)),
+const countryCodes = [...new Set(world_data.map(d => d.countrycode))];
+
+const regions = new Set(world.features.map(d => d.properties.continent)),
     continentColor = d3.scaleOrdinal(d3.schemeCategory10).domain(regions.values()),
     continentLegend = d3.legendColor().scale(continentColor);
 
